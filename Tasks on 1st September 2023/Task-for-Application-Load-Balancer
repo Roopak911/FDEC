@@ -1,0 +1,76 @@
+#####ELB related tasks on 01.09.2023#####
+
+#####Task no.1: To create an application load balancer for 3 different websites###### 
+
+#####Step 1:- Launching 6 instances with 2 instances hosting same websites.
+
+- Click on launch instance.
+- Give name to the instance.
+- Select AMI for the instance.
+- Select key pair.
+- Select Security group with inbound rule added for port 80 or http.
+- Click on additional setting
+- Under the section of "user data" insert following script.
+#!bin/bash
+sudo yum update
+sudo yum install httpd -y
+sudo systemctl start httpd
+sudo systemctl enable httpd
+sudo echo "<h1>THIS IS HOME PAGE $(hostname -f)</h1>" > /var/www/html/index.html
+- Repeat above steps for launching other 5 instances and just replace "HOME" in the above script with "MOBILE" and "LAPTOP" for resoective instances.
+- After this you would be having 6 instances launched with 2 instances hosting "HOME" site, 2 instances hosting "MOBILE" site and 2 instances hosting "LAPTOP" site.
+- Also in the script you will change the echo command to "sudo echo "<h1>THIS IS MOBILE PAGE $(hostname -f)</h1>" > /var/www/html/mobile/index.html" for instances hosting
+  "MOBILE" website and  for the instances hosting "LAPTOP" websit echo command will change as "sudo echo "<h1>THIS IS LAPTOP PAGE $(hostname -f)</h1>" > /var/www/html/laptop/index.html.  
+
+
+
+#####Step2 :- Creating 3 target groups attaching 2 same hosting websites instances.
+
+- Click on target group located at the bottom left column of the EC2 dashboard.
+- Click on "create target group." 
+- Click "target type" as instances and 
+- Insert target name in the required field and keep rest of the settings to as it is.
+- Set health check path to "/" for the "HOME" website. 
+- Click on "next".
+- Select 2 instances which are hosting a website for the "HOME".
+- Click on "include as pending below".
+- Click on "Create target group".
+- Repeat above steps to create remaining 2 target groups. Provided for "MOBILE" website you will set 
+  health check path to "/mobile/*" and same for "LAPTOP" you will set health check path to "/laptop/*"
+- After these steps you will be having 3 target groups created and each target group will have 2 instances hosting same website.
+
+
+
+
+#####Step3:- Creating an Application Load Balancer
+
+- Click on "Load Balancer" located at the bottom left corner of the EC2 dashboard.
+- Click on "Create an Application Load Balancer."
+- Keep rest of the parameters as default and jump down on "mapping" section.
+- Select all the available AZ in your region.
+- Select security group having added rule for "http".
+- In the field of "Listeners and Routing" select protocol=http, port=80 and in the field of "listeners" select first target group.
+- Click on "Create load balancer".
+- Wait till load balancer's status changed to "Active".
+- After click on the load balancer name and scroll down.
+- Click on "Rule" and after click on "Add Rule".
+- Insert name for the rule and hit next, after that click on "Add condition"
+- Choose condition as "Path"
+- In the value section put "/mobile/*" and hit next.
+- In the field of "forward to target group" select second target group for "MOBILE" webpage and hit next.
+- Set priority for 200 and click on next and after click on the create rule.
+- Repeat above steps to create another rule for the third target group hosting "LAPTOP" website by making changes to the path value inside add condition field as "/laptop/*"
+  and selecting priority to 201.
+- Afetr this you will be having three rules for the elastic load balancer which will describe the path for the particular webpage i.e. "HOME", "MOBILE" and "LAPTOP".
+
+
+
+
+#####Step4:- Launching the webpages
+
+- Copy the DNS of the load balancer and paste it in the browser. You must see "THIS IS HOME PAGE (hostname of your instance)".
+- In the address bar of your browser type "/mobile/" after your load balncer's DNS. You must see "THIS IS MOBILE PAGE (hostname of your instance)". 
+- In the address bar of your browser type "/laptop/" after your load balncer's DNS. You must see "THIS IS LAPTOP PAGE (hostname of your instance)".
+
+
+
