@@ -1,0 +1,49 @@
+                                      ########Task of hosting NGINX and HTTPD on same server in Ubuntu and Amazon Linux 2########
+									 
+
+########Hosting NGINX and Apache on Ubuntu :-
+- You can follow following steps to host Nginx and Apache2 on same server.
+1. Launch an EC2 instance with AMI Ubuntu, setting inbound rule to add ports 80 and 81 in security group and take SSH.
+2. Write down following commands to install and start nginx on the server :-
+  - sudo -i (for login as root user).
+  - apt-get update (to update Ubuntu).
+  - apt install nginx (to install nginx package)
+  - service nginx start (to start nginx service)
+  - service nginx enable ( to enable nginx service)
+  - copy instance's public ip and paste it in the address bar of the browser and check whether server test page opens or not.
+3. Nginx server has been installed and running on the instance.
+4. Write down following commands to install and start Apache2 on the same server :-
+  - apt install apache2 (to install apache2 package)
+  - before starting and enabling apache2 service we must move the root directory of the apache2 server from "/var/www/html/index.html" to some other location like
+    "/var/www/html/apache2/index.html".
+  - to achieve above results we must edit the configuration file for the apache 2 server located at "/etc/apache2/sites-enabled/000-default.conf" using vi editor and paste the 
+    path "/var/www/html/apache2/index.html".
+  - now we will assign port no. 81 to the apache2
+  - vim /etc/apache2/ports.conf and change "listen 80" to "listen 81".
+  - service apache2 start (to start apache2 service)
+  - service apache2 enable ( to enable apache2 service)
+  - copy instance's public ip and paste it in the address bar of the browser and paste ":81" after that and check whether apache2 server runnig or not.
+  
+  
+  
+  
+ 
+########Hosting Nginx and hhtpd on the Amazon Linux 2 :-
+- You can follow following steps to host Nginx and Apache2 on same server.
+1. Launch an EC2 instance with AMI Ubuntu, setting inbound rule to add ports 80 and 81 in security group and take SSH.
+2. Write down following commands to install and start nginx on the server :-
+  - sudo -i (for login as root user).
+  - yum install update (to update Amazon Linux 2)
+  - amazon-linux-extras install nginx1 (install nginx package)
+  - systemctl start nginx (to start nginx service)
+  - systemctl enable nginx (to enable nginx service)
+  - copy instance's public ip and paste it in the address bar of the browser and check whether server test page opens or not
+3. Nginx server has been installed and running on the instance.
+4. Write down following commands to install and start httpd on the same server :-
+  - yum install httpd (to install httpd package on the server)
+  - vim /etc/httpd/conf/httpd.conf.
+  - in the same configuration file change "listen 80" to "listen 81".
+  - systemctl start httpd (to start httpd service)
+  - systemctl enable httpd (to enable httpd service)
+  - copy instance's public ip and paste it in the address bar of the browser and paste ":81" after that and check whether apache2 server runnig or not.
+  

@@ -1,0 +1,45 @@
+                                       #########Task to create an IAM role for EC2 with time limited policy########
+								
+								
+								
+					
+					
+#####Steps to create an IAM role for EC2 service with time limited policy :-
+
+  1. Go to the IAM service after login into AWS console.
+  2. Click on the IAM Role on the left hand side of the IAM dashboard.
+  3. Click on the "create Iam Role"
+  4. Select "AWS Services"
+  5. Select "EC2" and hit next.
+  6. Under policy section click on the create policy and select the JSON format tab and type in the following instructions for the time limit policy,
+      - {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:ExportClientVpnClientConfiguration"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "DateGreaterThan": {
+                    "aws:CurrentTime": "2023-09-03T12:00:00Z"
+                },
+                "DateLessThan": {
+                    "aws:CurrentTime": "2020-09-03T14:00:00Z"
+                }
+            }
+        }
+    ]
+}
+
+    - You can chage the value in the Action field as per your application and also can change date and time as per your requirements inside conditions field.
+	
+  7. Click on the next and click on the create role.
+  8. Go to the EC2 dashboard.
+  9. Select the instance of which you want to change the IAM role.
+  10. Click on the "Actions" and select "Security" tab.
+  11. Click on the "Modify IAM Role" and select the role which we have created.
+  
+  
+  

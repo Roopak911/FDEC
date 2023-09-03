@@ -1,0 +1,35 @@
+######Task to create a classical load balancer######
+
+
+#####Step 1:- To launch 3 instances hosting different websites
+- Click on launch instance.
+- Give name to the instance.
+- Select AMI for the instance.
+- Select key pair.
+- Select Security group with inbound rule added for port 80 or http.
+- Click on additional setting
+- Under the section of "user data" insert following script.
+"#!bin/bash
+sudo yum update
+sudo yum install httpd -y
+sudo systemctl start httpd
+sudo systemctl enable httpd
+sudo echo "<h1>THIS IS HOME PAGE $(hostname -f)</h1>" > /var/www/html/index.html"
+- Repeat above steps for launching other 2 instances and just replace "HOME" in the above script with "MOBILE" and "LAPTOP" for resoective instances.
+- After this you would be having 3 instances launched with 1 instance hosting "HOME" site, 1 instances hosting "MOBILE" site and 1 instances hosting "LAPTOP" site.
+- Also in the script you will change the echo command to "sudo echo "<h1>THIS IS MOBILE PAGE $(hostname -f)</h1>" > /var/www/html/mobile/index.html" for instances hosting
+  "MOBILE" website and  for the instances hosting "LAPTOP" websit echo command will change as "sudo echo "<h1>THIS IS LAPTOP PAGE $(hostname -f)</h1>" > /var/www/html/laptop/index.html.
+
+
+######Step 2:- Creating an calssical load balancer
+- Click on "Load Balancer" located at the bottom left corner of the EC2 dashboard.
+- Click on "Create an Application Load Balancer."
+- Keep rest of the parameters as default and jump down on "mapping" section.
+- Select all the available AZ in your region.
+- Select security group having added rule for "http".
+- In the "instance: section click on "add instances" and add 3 instances which you have launched in the previous step.
+- Keep rest of the settings as it is.
+- Click on the "create load balancer".
+- Wait till load balancer's status changed to "Active".
+- Once the status od load balancer is active copy its DNS and paste in the address bar of your browser and check its functionality.
+
